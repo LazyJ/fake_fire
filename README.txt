@@ -38,8 +38,8 @@ Minetest version:  0.4.9
 Depends: default
 Recommended Additional Mods: none
 License:  GPL v2
-Source Code:  http://github.com/LazyJ/fake_fire_fork
-Download (.zip):  http://github.com/LazyJ/fake_fire_fork/archive/master.zip
+Source Code:  http://github.com/LazyJ/fake_fire
+Download (.zip):  http://github.com/LazyJ/fake_fire/archive/master.zip
 
 Install:
 	* After downloading, unzip the file.
