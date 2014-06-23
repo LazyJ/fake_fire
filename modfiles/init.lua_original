@@ -3,31 +3,26 @@ minetest.register_node("fake_fire:fake_fire", {
 	tiles = {
 		{name="fake_fire_animated.png", animation={type="vertical_frames", aspect_w=16, aspect_h=16, length=1.5}},
 		},
-	-- Repeated below ~ LazyJ, 2014_02_17
-	--paramtype = "light",
+	paramtype = "light",
 	is_ground_content = true,
-   	inventory_image = 'fake_fire.png',
-	wield_image = {
+    inventory_image = 'fake_fire.png',
+    wield_image = {
 		{name="fake_fire_animated.png", animation={type="vertical_frames", aspect_w=16, aspect_h=16, length=1.5}},
 		},
 	drawtype = "plantlike",
-	waving = 1, -- This wasn't an option when this mod was written. ~ LazyJ, 2014_03_13
 	light_source = 14,
 	drop = '',
-	--damage_per_second = 2*0.5, -- It's *fake* fire. PvP on our server has been disabled for a reason. I don't want griefers lighting players on fire or trapping them in blazes. ~ LazyJ, 2014_0_13
+	damage_per_second = 2*0.5,
 	groups = {dig_immediate=3,attached_node=1},
 	paramtype = "light",
 	walkable = false,
 	sounds = minetest.sound_play("fire_small", {pos=cp, loop=true}),
-	on_punch = function (pos,node,puncher)
-	minetest.sound_play("fire_extinguish", {pos = pos, gain = 1.0, max_hear_distance = 20,})
+    on_punch = function (pos,node,puncher)
+	minetest.sound_play("fire_extinguish",
+	{pos = pos, gain = 1.0, max_hear_distance = 20,})
 end
 })
-
-
-
---[[ Uncraftable, at the moment, and I'm not sure yet how many wanna-be-firebug griefers are going to litter with fake-fire. Why give them this if it only makes the mess bigger? ~ LazyJ, 2014_03_13
-minetest.register_craftitem("fake_fire:old_flint_and_steel", {
+ minetest.register_craftitem("fake_fire:old_flint_and_steel", {
 	description = "Never ending flint and steel",
 	inventory_image = "flint_and_steel.png",
 	stack_max = 1,
@@ -39,11 +34,8 @@ minetest.register_craftitem("fake_fire:old_flint_and_steel", {
 			minetest.sound_play("",
 			{gain = 1.0, max_hear_distance = 20,})
 		end
-	end
+	end,
 })
---]]
-
-
 
 -- new code --
 
@@ -72,7 +64,8 @@ minetest.register_tool("fake_fire:flint_and_steel", {
 	tool_capabilities = {
 		full_punch_interval = 1.0,
 		max_drop_level=0,
-		groupcaps={flamable = {uses=65, maxlevel=1},
+		groupcaps={
+			flamable = {uses=65, maxlevel=1},
 		}
 	},
 	on_use = function(itemstack, user, pointed_thing)
@@ -83,40 +76,23 @@ minetest.register_tool("fake_fire:flint_and_steel", {
 			itemstack:add_wear(65535/65)
 			return itemstack
 		end
-	end
+	end,
 
 })
 
-
-
---[[
-I commented out this part because:
-   1. water and lava buckets have been disabled on the server,
-   2. putting out fire with lava would only make a big mess, and
-   3. adding another ABM for a minor mod would needlessly add to the lag.
-
-As for 'realism':
-   * C'mon... This is *fake* fire.
-   * Torches have long been impervious to water.
-   * Minetest creates surreal worlds so it's OK if some things aren't perfectly realistic.
- 
-Besides, the fake-fire can be put out by punching it - simple and effective. ~ LazyJ, 2014_03_14
-
-
-
 -- water and lava puts out fake fire --
 minetest.register_abm({
-	nodenames = {"fake_fire:fake_fire"},
-	interval = 1,
-	chance = 1,
-	action = function(pos, node)
-		if minetest.env:find_node_near(pos, 1, {"default:water_source", "default:water_flowing","default:lava_source","default:lava_flowing"}) then
-		minetest.sound_play("fire_extinguish",
-		{gain = 1.0, max_hear_distance = 20,})
-		node.name = "air"
-		minetest.env:set_node(pos, node)
-		end
-	end
+nodenames = {"fake_fire:fake_fire"},
+interval = 1,
+chance = 1,
+action = function(pos, node)
+if minetest.env:find_node_near(pos, 1, {"default:water_source", "default:water_flowing","default:lava_source","default:lava_flowing"}) then
+	minetest.sound_play("fire_extinguish",
+	{gain = 1.0, max_hear_distance = 20,})
+node.name = "air"
+minetest.env:set_node(pos, node)
+end
+end,
 })
 
 minetest.register_craftitem("fake_fire:flint", {
@@ -127,7 +103,7 @@ minetest.register_craftitem("fake_fire:flint", {
 })
 
 minetest.register_craft({
-	output = 'fake_fire:flint_and_steel 1',
+	output = '"fake_fire:flint_and_steel" 1',
 	recipe = {
 		{"fake_fire:flint", ""},
 		{"", "default:steel_ingot"},
@@ -135,25 +111,11 @@ minetest.register_craft({
 })
 
 minetest.register_craft({
-	output = 'fake_fire:flint 1',
+	output = '"fake_fire:flint" 1',
 	recipe = {
 		{"default:gravel"},
 	}
 })
---]]
-
-
-
---[[
-The lines below, at the end, are from the original author, Semmett9.
-
-http://forum.minetest.net/viewtopic.php?id=6145
-
-Thanks for a nice mod, Semmett9. ;)
-
-~ LazyJ, 2014_03_14
---]]
-
 
 
 -- Thanks-
@@ -162,3 +124,4 @@ Thanks for a nice mod, Semmett9. ;)
 
 -- Many thanks for the players on the King Arthur's land server for giving --
 -- me support, ideas and allowing me to add the mod to the server itself. --
+
