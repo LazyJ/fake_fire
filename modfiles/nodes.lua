@@ -17,6 +17,11 @@ minetest.register_node("fake_fire:fake_fire", {
 	 -- Waving wasn't an option when this mod was written. ~ LazyJ, 2014_03_13
 	waving = 1,
 	light_source = 14,
+	-- Adding sunlight_propagtes and leaving comments as a future reference.
+	-- If true, sunlight will go infinitely through this (no shadow is cast).
+	-- Because fire produces light it should be "true" so fire *doesn't* have
+	-- a shadow. 
+	sunlight_propagates = true,
 	-- damage_per_second = 2*0.5, -- It's *fake* fire. PvP on our server has
 	-- been disabled for a reason. I don't want griefers lighting players on
 	-- fire or trapping them in blazes. ~ LazyJ, 2014_0_13
@@ -58,6 +63,11 @@ minetest.register_node("fake_fire:smokeless_fire", {
 	 -- Waving wasn't an option when this mod was written. ~ LazyJ, 2014_03_13
 	waving = 1,
 	light_source = 14,
+		-- Adding sunlight_propagtes and leaving comments as a future reference.
+	-- If true, sunlight will go infinitely through this (no shadow is cast).
+	-- Because fire produces light it should be "true" so fire *doesn't* have
+	-- a shadow. 
+	sunlight_propagates = true,
 	-- damage_per_second = 2*0.5, -- It's *fake* fire. PvP on our server has
 	-- been disabled for a reason. I don't want griefers lighting players on
 	-- fire or trapping them in blazes. ~ LazyJ, 2014_0_13
@@ -99,6 +109,11 @@ minetest.register_node("fake_fire:ice_fire", {
 	 -- Waving wasn't an option when this mod was written. ~ LazyJ, 2014_03_13
 	waving = 1,
 	light_source = 14,
+		-- Adding sunlight_propagtes and leaving comments as a future reference.
+	-- If true, sunlight will go infinitely through this (no shadow is cast).
+	-- Because fire produces light it should be "true" so fire *doesn't* have
+	-- a shadow. 
+	sunlight_propagates = true,
 	-- damage_per_second = 2*0.5, -- It's *fake* fire. PvP on our server has
 	-- been disabled for a reason. I don't want griefers lighting players on
 	-- fire or trapping them in blazes. ~ LazyJ, 2014_0_13
@@ -140,6 +155,11 @@ minetest.register_node("fake_fire:smokeless_ice_fire", {
 	 -- Waving wasn't an option when this mod was written. ~ LazyJ, 2014_03_13
 	waving = 1,
 	light_source = 14,
+		-- Adding sunlight_propagtes and leaving comments as a future reference.
+	-- If true, sunlight will go infinitely through this (no shadow is cast).
+	-- Because fire produces light it should be "true" so fire *doesn't* have
+	-- a shadow. 
+	sunlight_propagates = true,
 	-- damage_per_second = 2*0.5, -- It's *fake* fire. PvP on our server has
 	-- been disabled for a reason. I don't want griefers lighting players on
 	-- fire or trapping them in blazes. ~ LazyJ, 2014_0_13
@@ -178,46 +198,80 @@ minetest.register_tool("fake_fire:flint_and_steel", {
 		}
 	},
 	on_use = function(itemstack, user, pointed_thing)
-	-- This next section took me many hours of keyboard bashing to figure out.
-	-- The lua documentation and examples for Minetest is terrible.
-	-- ~ LazyJ, 2014_06_21
+	-- This next section took me a lot of keyboard bashing to figure out.
+	-- The lua documentation and examples for Minetest are terrible.
+	-- ~ LazyJ, 2014_06_23
 	
-		if
-			 -- A *node*, not a player or sprite. ~ LazyJ
-			pointed_thing.type == "node"
-			
-			-- These next two "and nots" tell Minetest not to put the red flame
-			-- on snow and ice stuff. This "string" bit was the workable
-			-- solution that took many hours, over several day, to finally
-			-- come around to. It's a search for any node name that contains
-			-- whatever is between the double-quotes, ie. "snow" or "ice". I
-			-- had been trying to identify the nodes by their group properties
-			-- and I couldn't figure out how to do it. The clue for the "string"
-			-- came from Blockmen's "Landscape" mod.
-			--  ~ LazyJ
-			and not
-			string.find(minetest.get_node(pointed_thing.under).name, "snow")
-			and not
-			string.find(minetest.get_node(pointed_thing.under).name, "ice")
-			and 
-			minetest.get_node(pointed_thing.above).name == "air" then
-			minetest.set_node(pointed_thing.above,
-			{name="fake_fire:smokeless_fire"})
-			end
+		local snow_ice_list = {"snow", "ice",}
+	
+			for _, which_one_is_it in pairs(snow_ice_list) do
+				local snow_ice = which_one_is_it
+	
+				if
+					-- A *node*, not a player or sprite. ~ LazyJ
+					pointed_thing.type == "node"
+					
+					--[[
+						These next two "and nots" tell Minetest not to put the
+						red	flame on snow and ice stuff. This "string" bit was
+						the workable solution that took many hours, over
+						several days, to finally come around to. It's a search
+						for any node name that contains	whatever is between the
+						double-quotes, ie. "snow" or "ice". I had been trying
+						to identify the nodes by their group properties	and I
+						couldn't figure out how to do it. The clue for the
+						"string"came from Blockmen's "Landscape" mod.
+				
+						Another quirk is that the "string" doesn't work well
+						with variable lists (see "snow_ice_list") when using
+						"and not". Ice-fire would light on snow but when I
+						clicked on ice, the regular	flame appeared. I couldn't
+						understand what was happening until	I mentally changed
+						the wording "and not" to "is not" and spoke	out-loud
+						each thing that line of code was to accomplish:
+				
+						"Is not snow, then make fake-fire."
+						"Is not ice, then make fake-fire."
+				
+						That's when I caught the problem.
+				
+						Ice *is not* snow, so Minetest was correctly following
+						the	instruction, "Is not snow, then make fake-fire."
+						and that is	why	fake-fire appeared instead of ice-fire
+						when I clicked on ice.   
+			 
+						~ LazyJ
+					--]]
+									
+				and not
+				string.find(minetest.get_node(pointed_thing.under).name, "snow")
+				and not
+				string.find(minetest.get_node(pointed_thing.under).name, "ice")
+				and
+				minetest.get_node(pointed_thing.above).name == "air"
+				then
+				minetest.set_node(pointed_thing.above,
+				{name="fake_fire:smokeless_fire"})
+	
+			elseif
 
-	-- This next part sets the ice flame.  ~ LazyJ
+				pointed_thing.type == "node"
+				and
+				-- Split this "string" across several lines because I ran out
+				-- of room while trying to adhere to the 80-column wide rule
+				-- of coding style.
+				string.find(
+						minetest.get_node(pointed_thing.under).name,
+						snow_ice
+						)
+				and 
+				minetest.get_node(pointed_thing.above).name == "air"
+				then
+				minetest.set_node(pointed_thing.above,
+				{name="fake_fire:smokeless_ice_fire"})						
+			end -- Line 210, if
+		end -- Line 207, for/do	
 		
-		if
-			pointed_thing.type == "node"
-			and
-			string.find(minetest.get_node(pointed_thing.under).name, "snow")
-			or  -- "or" is an important change of requirements. ~ LazyJ
-			string.find(minetest.get_node(pointed_thing.under).name, "ice")
-			and 
-			minetest.get_node(pointed_thing.above).name == "air" then
-			minetest.set_node(pointed_thing.above,
-			{name="fake_fire:smokeless_ice_fire"})						
-		end
 			minetest.sound_play("",
 			{gain = 1.0, max_hear_distance = 2,})
 			itemstack:add_wear(65535/65)
@@ -274,6 +328,13 @@ minetest.register_node("fake_fire:smoke", {
 	drawtype = "plantlike",
 	waving = 1,
 	light_source = 3, -- Just a little light to glow at night. ~ LazyJ
+	-- Adding sunlight_propagtes and leaving it commented-out as a future
+	-- reference.
+	-- If true, sunlight will go infinitely through this (no shadow).
+	-- I want smoke to cast a shadow like real smoke does.
+	-- Fire, on the other hand, produces light so it should be "true" so fire
+	-- *doesn't* have a shadow. 
+	-- sunlight_propagates = false,
 	tiles = {
 		{
 			image="fake_fire_smoke_animated.png",
@@ -315,6 +376,12 @@ minetest.register_node("fake_fire:embers", {
 	inventory_image = minetest.inventorycube('fake_fire_embers.png'),
 	is_ground_content = true,
 	light_source = 9,
+	-- Adding sunlight_propagtes and leaving comments as a future reference.
+	-- If true, sunlight will go infinitely through this (no shadow is cast).
+	-- Because embers produce some light it should be somewhat "true" but this
+	-- is an area where Minetest lacks in subtlety so I'm opting for 100% that
+	-- embers *don't* have a shadow. 
+	sunlight_propagates = true,
 	 -- It's almost soft, brittle charcoal. ~ LazyJ
 	groups = {choppy=3, crumbly=3, oddly_breakable_by_hand=3},
 	paramtype = "light",
@@ -373,7 +440,8 @@ minetest.register_node("fake_fire:chimney_top_sandstone", {
 	on_punch = function (pos,node,puncher)
 		-- This swaps the smokeless version with the smoky version when punched.
 		-- ~ LazyJ
-		minetest.set_node(pos, {name = "fake_fire:smokeless_chimney_top_sandstone"})
+		minetest.set_node(pos,
+		{name = "fake_fire:smokeless_chimney_top_sandstone"})
 	end
 })
 
