@@ -47,3 +47,36 @@ CHANGELOG
 	* Added animated, glowing embers. This hearth-warming block emits a
 	mid-level light and simulates the hot coals under a flame. Flames are not
 	required and the embers blocks are smokeless.
+	
+	
+	
+2014_06_23:
+
+	* Flames - "sunlight_propagates = true,"
+	-- Adding sunlight_propagtes and leaving comments as a future reference.
+	-- If true, sunlight will go infinitely through this (no shadow is cast).
+	-- Because fire produces light it should be "true" so fire *doesn't* have
+	-- a shadow. 
+	
+	* Embers - "sunlight_propagates = true,"
+	-- Adding sunlight_propagtes and leaving comments as a future reference.
+	-- If true, sunlight will go infinitely through this (no shadow is cast).
+	-- Because embers produce some light it should be somewhat "true" but this
+	-- is an area where Minetest lacks in subtlety so I'm opting for 100% that
+	-- embers *don't* have a shadow. 
+	
+	* Bug Fix - Server Crash when Flint-Steel Clicked on Nothing (sky).
+	-- Players can see farther than they can reach. Even though the player
+	-- was aiming for a node several spaces ahead of them, Minetest's targeting
+	-- range doesn't extend that far. The player saw the node they were aiming
+	-- at, Minetest's target range ended and Minetest saw "nothing"
+	-- (a nil value). The bug was a conflict in the code so when that
+	-- particular nil value popped up, Minetest was confused by the bug, threw
+	-- up it's hands in frustration and said "I quit!" by crashing.
+	
+	* Original init.lua Added
+	-- What I thought was the original init.lua file turned out to be one I had
+	-- tinkered with months ago. So I extracted the actual original init.lua
+	-- file from a zip file of the original mod. Why bother including it in my
+	-- fork? Because it's a reference to compare to and learn from.
+	
