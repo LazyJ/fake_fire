@@ -80,3 +80,45 @@ CHANGELOG
 	-- file from a zip file of the original mod. Why bother including it in my
 	-- fork? Because it's a reference to compare to and learn from.
 	
+	
+	
+2014_07_31:
+
+	* Textures
+	-- "texture_source_info.txt" added listing who made what textures.
+	-- White, grey, and black smoke added.
+	
+	* Smoke
+	-- Smoke changed from an animated node to particles.
+	-- Alias added to remove previous animated-node smoke.
+	-- Added two smoke column types. One is narrow and vertical; intended for
+		use *inside* chimneys. The second smoke column type is intended for
+		outdoor use as it drifts and fans-out to the south, following the
+		direction of the clouds.
+	-- Added clearance-space check. If there is nothing directly to the south
+		of the flame or chimney_top (z -1) and nothing in the 14 nodes above,
+		then the drifting column of smoke will appear. If the there is something
+		in the way, then the narrow, vertical column of smoke will be used.
+		Additional clearance checks added to prevent the smoke from forming in
+		places it shouldn't like floors above or inside builds next to the
+		drifting smoke flames and chimney_tops. 
+	-- ABMs to generate the three stages of smoke.
+	-- Borrowed some of VanessaE's code to generate multiple shades of smoke
+		in the first two stages of smoke.
+	-- *Not* using deprecated particle code that causes newer, unstable release
+		versions of Minetest 0.4.10 to crash. I've tested on Minetest v0.4.9,
+		and v0.4.10 (2014_07_29 release), compiled myself in Linux.
+		
+	* Flames
+	-- Increased the speed of the flames animation just a tad to better fit
+		with the new smoke each time it puffs into being.
+	   
+	* Flint_and_Steel
+	-- Borrowed some of VanessaE's code so players can not place flames in
+		protected areas they do not own. Changed the chat notice wording to
+		scold them with. ;)   
+
+	* General
+	-- Added more observation notes and tidied-up some of the mess I left from
+	   the last time.
+ 
