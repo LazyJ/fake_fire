@@ -34,7 +34,7 @@ Ok, done ranting. ;)-
 
 
 
-Minetest version:  0.4.9
+Minetest version:  0.4.10
 Depends: default
 Recommended Additional Mods: none
 License:  GPL v2
